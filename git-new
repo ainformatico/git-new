@@ -41,6 +41,8 @@ summary = body['fields']['summary']
           .gsub(/-+/, '-') # remove duplicated -
           .gsub(/-$/, '') # remove trailing -
 
+summary = summary[0..69] # this ensures we don't hit limits in some tools (e.g Netlify)
+
 # remove project prefix
 issue_id = issue.gsub(/^\w+-/, '')
 
