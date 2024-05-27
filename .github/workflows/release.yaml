@@ -1,6 +1,9 @@
 name: Go
 
-on: [push]
+on:
+  push:
+    tags:
+    - 'v[0-9]+.[0-9]+.[0-9]*'
 
 jobs:
   build:
@@ -17,10 +20,21 @@ jobs:
       - name: Build
         run: |
           mkdir release/
-          GOOS=linux GOARCH=amd64 go build -v -o release/git-new-linux
+          GOOS=linux GOARCH=amd64 go build -v -o release/git-new-linux-amd64
 
       - name: Upload Go test results
         uses: actions/upload-artifact@v4
         with:
           name: git-new-linux
           path: release/
+
+      - name: Create Release
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create \
+            --verify-tag \
+            --title "Release ${{ github.ref_name }}" \
+            "${{ github.ref_name }}" \
+            release/git-new-linux-amd64
