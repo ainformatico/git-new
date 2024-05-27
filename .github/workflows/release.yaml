@@ -1,0 +1,26 @@
+name: Go
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.x'
+
+      - name: Build
+        run: |
+          mkdir release/
+          GOOS=linux GOARCH=amd64 go build -v -o release/git-new-linux
+
+      - name: Upload Go test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: git-new-linux
+          path: release/
